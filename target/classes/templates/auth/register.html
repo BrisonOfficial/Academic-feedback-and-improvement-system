@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Register · AFIMS')}">
+</head>
+
+<body class="auth-page">
+
+    <div class="auth-shell wide">
+
+        <a th:href="@{/}" class="brand">
+            AFIMS <span>◆</span>
+        </a>
+
+
+        <div class="auth-card">
+
+            <div class="eyebrow">
+                ACCOUNT REQUEST
+            </div>
+
+            <h1>
+                Join AFIMS.
+            </h1>
+
+            <p class="muted">
+                Create an institutional account.
+                New registrations remain pending until approved
+                by an administrator.
+            </p>
+
+
+            <!-- Registration Error -->
+
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}">
+            </div>
+
+
+            <form th:action="@{/register}" th:object="${form}" method="post">
+
+
+                <!-- ========================= -->
+                <!-- PERSONAL INFORMATION -->
+                <!-- ========================= -->
+
+                <div class="form-section">
+
+                    <h3>
+                        Personal Information
+                    </h3>
+
+                    <div class="form-grid">
+
+                        <label>
+                            Full Name
+
+                            <input th:field="*{fullName}" required>
+
+                            <small th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}">
+                            </small>
+                        </label>
+
+
+                        <label>
+                            Email
+
+                            <input th:field="*{email}" type="email" required>
+
+                            <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                            </small>
+                        </label>
+
+
+                        <label>
+                            Phone
+
+                            <input th:field="*{phone}" type="tel" required>
+
+                            <small th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">
+                            </small>
+                        </label>
+
+
+                        <label>
+                            Role
+
+                            <select th:field="*{role}" required>
+
+                                <option value="">
+                                    Select role
+                                </option>
+
+                                <option value="STUDENT">
+                                    Student
+                                </option>
+
+                                <option value="FACULTY">
+                                    Faculty
+                                </option>
+
+                                <option value="HOD">
+                                    HOD
+                                </option>
+
+                            </select>
+
+                            <small th:if="${#fields.hasErrors('role')}" th:errors="*{role}">
+                            </small>
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- INSTITUTION INFORMATION -->
+                <!-- ========================= -->
+
+                <div class="form-section">
+
+                    <h3>
+                        Institution Information
+                    </h3>
+
+                    <div class="form-grid">
+
+                        <label>
+                            Institution
+
+                            <input th:field="*{institution}" required>
+
+                            <small th:if="${#fields.hasErrors('institution')}" th:errors="*{institution}">
+                            </small>
+                        </label>
+
+
+                        <label>
+                            Department
+
+                            <input th:field="*{department}" required>
+
+                            <small th:if="${#fields.hasErrors('department')}" th:errors="*{department}">
+                            </small>
+                        </label>
+
+
+                        <label>
+                            Institution ID
+
+                            <input th:field="*{institutionId}" required>
+
+                            <small th:if="${#fields.hasErrors('institutionId')}" th:errors="*{institutionId}">
+                            </small>
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- ACCOUNT SECURITY -->
+                <!-- ========================= -->
+
+                <div class="form-section">
+
+                    <h3>
+                        Account Security
+                    </h3>
+
+                    <div class="form-grid">
+
+                        <label>
+                            Password
+
+                            <input th:field="*{password}" id="password" type="password" minlength="8" required>
+
+                            <div class="strength">
+                                <i></i>
+                                <i></i>
+                                <i></i>
+                                <i></i>
+                            </div>
+
+                            <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                            </small>
+                        </label>
+
+
+                        <label>
+                            Confirm Password
+
+                            <input th:field="*{confirmPassword}" type="password" required>
+
+                            <small th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">
+                            </small>
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- SUBMIT -->
+                <!-- ========================= -->
+
+                <button class="btn btn-primary w-100" type="submit">
+
+                    Submit Registration
+
+                </button>
+
+            </form>
+
+
+            <p class="auth-bottom">
+
+                Already registered?
+
+                <a th:href="@{/login}">
+                    Return to login
+                </a>
+
+            </p>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

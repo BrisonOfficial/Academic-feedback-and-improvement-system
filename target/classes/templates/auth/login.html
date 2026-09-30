@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Login · AFIMS')}"></head>
+
+<body class="auth-page">
+
+<div class="auth-shell">
+
+    <a href="/" class="brand">
+        AFIMS <span>◆</span>
+    </a>
+
+    <div class="auth-card">
+
+        <div class="eyebrow">SECURE ACADEMIC ACCESS</div>
+
+        <h1>Welcome back.</h1>
+
+        <p class="muted">
+            Sign in to your AFIMS workspace.
+        </p>
+
+        <div th:if="${param.error}" class="alert alert-danger">
+            Email or password is incorrect, or the account is not active.
+        </div>
+
+        <div th:if="${param.logout}" class="alert alert-success">
+            You have been signed out.
+        </div>
+
+        <div th:if="${param.forgot}" class="alert alert-warning">
+            Password reset is prepared as a UI workflow.
+            Connect an institutional mail provider before enabling
+            production resets.
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+        <form th:action="@{/login}" method="post">
+
+            <label>
+                Email
+                <input
+                    name="username"
+                    type="email"
+                    required
+                    autocomplete="email">
+            </label>
+
+            <label>
+                Password
+                <input
+                    name="password"
+                    type="password"
+                    required
+                    autocomplete="current-password">
+            </label>
+
+            <div class="form-row">
+
+                <label class="check">
+                    <input type="checkbox" name="remember-me">
+                    Remember me
+                </label>
+
+                <a href="/login?forgot=1" class="muted">
+                    Forgot password?
+                </a>
+
+            </div>
+
+            <button
+                class="btn btn-primary w-100"
+                type="submit">
+                Login to AFIMS
+            </button>
+
+        </form>
+
+        <p class="auth-bottom">
+            New to AFIMS?
+            <a href="/register">Create an account</a>
+        </p>
+
+    </div>
+
+</div>
+
+</body>
+</html>

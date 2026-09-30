@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Admin Console · AFIMS')}">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+
+    <div th:replace="~{fragments/nav :: nav}"></div>
+
+
+    <main class="container page">
+
+        <!-- ========================= -->
+        <!-- PAGE HEADER -->
+        <!-- ========================= -->
+
+        <div class="page-head">
+
+            <div>
+
+                <div class="eyebrow">
+                    ADMINISTRATION
+                </div>
+
+                <h1>
+                    AFIMS control room.
+                </h1>
+
+                <p class="muted">
+                    Manage the academic feedback ecosystem and
+                    keep the workflow accountable.
+                </p>
+
+            </div>
+
+
+            <a th:href="@{/admin/audit}" class="btn btn-ghost">
+
+                View Audit Log
+
+            </a>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- STATISTICS -->
+        <!-- ========================= -->
+
+        <div class="stats">
+
+            <div class="stat">
+                <span>Total users</span>
+                <strong th:text="${totalUsers}">0</strong>
+            </div>
+
+
+            <div class="stat">
+                <span>Active users</span>
+                <strong th:text="${activeUsers}">0</strong>
+            </div>
+
+
+            <div class="stat">
+                <span>Pending registrations</span>
+                <strong th:text="${pending}">0</strong>
+            </div>
+
+
+            <div class="stat">
+                <span>Feedback submissions</span>
+                <strong th:text="${feedbackCount}">0</strong>
+            </div>
+
+
+            <div class="stat">
+                <span>Average rating</span>
+
+                <strong th:text="${avg != null ? #numbers.formatDecimal(avg, 1, 2) : '0.00'}">
+                    0.00
+                </strong>
+            </div>
+
+
+            <div class="stat">
+                <span>Open plans</span>
+                <strong th:text="${openPlans}">0</strong>
+            </div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- USER APPROVALS + QUESTIONS -->
+        <!-- ========================= -->
+
+        <div class="grid-2">
+
+
+            <!-- USER APPROVALS -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <h2>
+                        User approvals
+                    </h2>
+
+                    <span class="tag">
+                        ACCESS
+                    </span>
+
+                </div>
+
+
+                <div th:if="${users == null || users.content == null || users.content.isEmpty()}" class="empty">
+
+                    No users found.
+
+                </div>
+
+
+                <div class="table-wrap" th:if="${users != null && users.content != null && !users.content.isEmpty()}">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>User</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <tr th:each="u : ${users.content}">
+
+                                <td>
+
+                                    <b th:text="${u.fullName}">
+                                        User
+                                    </b>
+
+                                    <small th:text="${u.email}">
+                                        email
+                                    </small>
+
+                                </td>
+
+
+                                <td th:text="${u.role}">
+                                    —
+                                </td>
+
+
+                                <td th:text="${u.status}">
+                                    —
+                                </td>
+
+
+                                <td>
+
+                                    <form method="post" th:action="@{'/admin/users/' + ${u.id} + '/status'}"
+                                        class="inline">
+
+                                        <select name="value">
+
+                                            <option value="ACTIVE">
+                                                Activate
+                                            </option>
+
+                                            <option value="REJECTED">
+                                                Reject
+                                            </option>
+
+                                            <option value="SUSPENDED">
+                                                Suspend
+                                            </option>
+
+                                        </select>
+
+
+                                        <button class="btn btn-small" type="submit">
+
+                                            Apply
+
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- QUESTION BANK -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <h2>
+                        Question bank
+                    </h2>
+
+                    <span class="tag">
+                        CONFIG
+                    </span>
+
+                </div>
+
+
+                <form method="post" th:action="@{/admin/questions}" class="stack">
+
+                    <input name="questionText" placeholder="New feedback question" required>
+
+
+                    <input name="category" placeholder="Category" required>
+
+
+                    <button class="btn btn-primary" type="submit">
+
+                        Add question
+
+                    </button>
+
+                </form>
+
+
+                <div th:if="${questions == null || questions.isEmpty()}" class="empty">
+
+                    No questions configured yet.
+
+                </div>
+
+
+                <div class="question-list compact" th:if="${questions != null && !questions.isEmpty()}">
+
+                    <div th:each="q : ${questions}">
+
+                        <span th:text="${q.questionText}">
+                            Question
+                        </span>
+
+                        <span class="tag" th:text="${q.category}">
+                            Category
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- FEEDBACK CYCLES -->
+        <!-- ========================= -->
+
+        <section class="panel">
+
+            <div class="panel-head">
+
+                <h2>
+                    Feedback cycles
+                </h2>
+
+                <span class="tag">
+                    ACADEMIC CALENDAR
+                </span>
+
+            </div>
+
+
+            <form method="post" th:action="@{/admin/cycles}" class="cycle-form">
+
+                <input name="name" placeholder="Cycle name" required>
+
+
+                <input name="academicYear" placeholder="2026-27" required>
+
+
+                <input name="semester" type="number" min="1" max="2" placeholder="Semester" required>
+
+
+                <input name="startDate" type="date" required>
+
+
+                <input name="endDate" type="date" required>
+
+
+                <button class="btn btn-primary" type="submit">
+
+                    Create cycle
+
+                </button>
+
+            </form>
+
+
+            <div th:if="${cycles == null || cycles.isEmpty()}" class="empty">
+
+                No feedback cycles created yet.
+
+            </div>
+
+
+            <div class="chips" th:if="${cycles != null && !cycles.isEmpty()}">
+
+                <span th:each="c : ${cycles}" th:text="${c.name + ' · ' + c.status}">
+                    Cycle
+                </span>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+
+    <footer th:replace="~{fragments/footer :: footer}">
+    </footer>
+
+</body>
+
+</html>

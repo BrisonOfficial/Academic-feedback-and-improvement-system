@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Gamma Insights · AFIMS')}">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+
+    <div th:replace="~{fragments/nav :: nav}"></div>
+
+
+    <main class="container page">
+
+        <!-- Page Header -->
+
+        <div class="page-head">
+
+            <div>
+
+                <div class="eyebrow">
+                    LOCAL NLP-STYLE ANALYSIS
+                </div>
+
+                <h1>
+                    Gamma Insight Assistant.
+                </h1>
+
+                <p class="muted">
+                    A transparent, rule-based first layer.
+                    Review the evidence before acting on it.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- No Feedback -->
+
+        <div th:if="${feedbacks == null || feedbacks.isEmpty()}" class="panel empty">
+
+            No feedback is available for analysis yet.
+
+        </div>
+
+
+        <!-- Insights -->
+
+        <div class="insight-grid" th:if="${feedbacks != null && !feedbacks.isEmpty()}">
+
+            <article class="panel" th:each="f, i : ${feedbacks}">
+
+                <!-- Header -->
+
+                <div class="panel-head">
+
+                    <h2 th:text="${'Feedback #' + f.id}">
+                        Feedback
+                    </h2>
+
+                    <span class="rating" th:text="${f.overallRating + '/5'}">
+                        0/5
+                    </span>
+
+                </div>
+
+
+                <!-- Comment -->
+
+                <p th:text="${f.comment != null && !f.comment.isBlank()
+                        ? f.comment
+                        : 'No comment provided.'}">
+                    No comment provided.
+                </p>
+
+
+                <!-- Positive Themes -->
+
+                <div th:if="${analyses != null
+                        && i.index < analyses.size()
+                        && analyses[i.index].positiveThemes != null
+                        && !#lists.isEmpty(analyses[i.index].positiveThemes)}">
+
+                    <b>
+                        Positive themes
+                    </b>
+
+                    <div class="chips">
+
+                        <span th:each="x : ${analyses[i.index].positiveThemes}" th:text="${x}">
+                            Theme
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Improvement Themes -->
+
+                <div th:if="${analyses != null
+                        && i.index < analyses.size()}">
+
+                    <b>
+                        Improvement themes
+                    </b>
+
+                    <div class="chips">
+
+                        <span th:if="${analyses[i.index].improvementThemes != null}"
+                            th:each="x : ${analyses[i.index].improvementThemes}" th:text="${x}">
+                            Theme
+                        </span>
+
+
+                        <span th:if="${analyses[i.index].improvementThemes == null
+                                || #lists.isEmpty(analyses[i.index].improvementThemes)}">
+
+                            No recurring theme detected
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Recommendation -->
+
+                <div class="recommendation" th:if="${analyses != null
+                        && i.index < analyses.size()}">
+
+                    <b th:text="${'Priority · ' + analyses[i.index].priority}">
+                        Priority
+                    </b>
+
+                    <br>
+
+                    <span th:text="${analyses[i.index].recommendation}">
+                        Recommendation
+                    </span>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+
+    <footer th:replace="~{fragments/footer :: footer}">
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+AFIMS CORRECTED BUILD
+
+1. Password storage is intentionally plain text for this academic/demo build.
+   Demo password for all four accounts: password
+   Demo accounts:
+   admin@afims.local
+   faculty@afims.local
+   hod@afims.local
+   student@afims.local
+
+2. BCrypt hashing was removed from registration and demo-account initialization.
+
+3. nav.html was fixed to use Thymeleaf Spring Security authorization attributes,
+   avoiding the broken nested-quote #authorization.expression syntax.
+
+4. The existing database may contain old BCrypt values. Starting the application
+   runs DemoAccountInitializer and resets the four demo accounts to the plain-text
+   demo password.
+
+WARNING: Plain-text password storage is NOT suitable for production. It is used
+here only because this requested academic/demo build requires passwords to be
+readable directly in the database.

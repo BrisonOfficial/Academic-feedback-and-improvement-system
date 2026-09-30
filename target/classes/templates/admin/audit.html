@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Audit Log · AFIMS')}">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+
+    <div th:replace="~{fragments/nav :: nav}"></div>
+
+
+    <main class="container page">
+
+        <!-- Page Header -->
+
+        <div class="page-head">
+
+            <div>
+
+                <div class="eyebrow">
+                    SYSTEM ACCOUNTABILITY
+                </div>
+
+                <h1>
+                    Audit log.
+                </h1>
+
+                <p class="muted">
+                    Recent security and workflow events.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Audit Table -->
+
+        <section class="panel">
+
+            <div class="panel-head">
+
+                <h2>
+                    Recent Events
+                </h2>
+
+                <span class="tag">
+                    AUDIT
+                </span>
+
+            </div>
+
+
+            <div th:if="${logs == null || logs.content == null || logs.content.isEmpty()}" class="empty">
+
+                No audit events recorded yet.
+
+            </div>
+
+
+            <div class="table-wrap" th:if="${logs != null && logs.content != null && !logs.content.isEmpty()}">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>Entity</th>
+                            <th>IP</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr th:each="l : ${logs.content}">
+
+                            <td th:text="${l.timestamp}">
+                                —
+                            </td>
+
+
+                            <td th:text="${l.user != null ? l.user.email : 'SYSTEM'}">
+                                SYSTEM
+                            </td>
+
+
+                            <td th:text="${l.action}">
+                                —
+                            </td>
+
+
+                            <td th:text="${l.entityName != null ? l.entityName + ' #' + l.entityId : '—'}">
+                                —
+                            </td>
+
+
+                            <td th:text="${l.ipAddress != null ? l.ipAddress : '—'}">
+                                —
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer th:replace="~{fragments/footer :: footer}">
+    </footer>
+
+</body>
+
+</html>

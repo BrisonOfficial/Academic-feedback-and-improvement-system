@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Faculty Dashboard · AFIMS')}">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+
+    <div th:replace="~{fragments/nav :: nav}"></div>
+
+
+    <main class="container page">
+
+        <!-- ========================= -->
+        <!-- PAGE HEADER -->
+        <!-- ========================= -->
+
+        <div class="page-head">
+
+            <div>
+
+                <div class="eyebrow">
+                    FACULTY WORKSPACE
+                </div>
+
+                <h1>
+                    Your learning signals.
+                </h1>
+
+                <p class="muted">
+                    Review feedback, identify improvement areas
+                    and own the response.
+                </p>
+
+            </div>
+
+
+            <a th:href="@{/faculty/plans/new}" class="btn btn-primary">
+
+                Create Improvement Plan
+
+            </a>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- STATISTICS -->
+        <!-- ========================= -->
+
+        <div class="stats">
+
+            <div class="stat">
+
+                <span>
+                    Overall rating
+                </span>
+
+                <strong th:text="${avg != null
+                        ? #numbers.formatDecimal(avg, 1, 2)
+                        : '0.00'}">
+                    0.00
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span>
+                    Responses
+                </span>
+
+                <strong th:text="${feedbacks != null
+                        ? feedbacks.size()
+                        : 0}">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span>
+                    Plans
+                </span>
+
+                <strong th:text="${plans != null
+                        ? plans.size()
+                        : 0}">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- FEEDBACK + PLANS -->
+        <!-- ========================= -->
+
+        <div class="grid-2">
+
+
+            <!-- RECENT FEEDBACK -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <h2>
+                        Recent Feedback
+                    </h2>
+
+                    <a th:href="@{/faculty/insights}">
+                        Gamma Insights →
+                    </a>
+
+                </div>
+
+
+                <div th:if="${feedbacks == null || feedbacks.isEmpty()}" class="empty">
+
+                    No feedback received yet.
+
+                </div>
+
+
+                <div class="table-wrap" th:if="${feedbacks != null && !feedbacks.isEmpty()}">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Course</th>
+                                <th>Rating</th>
+                                <th>Comment</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <tr th:each="f : ${feedbacks}">
+
+                                <td th:text="${f.course}">
+                                    —
+                                </td>
+
+
+                                <td>
+
+                                    <span class="rating" th:text="${f.overallRating + '/5'}">
+                                        0/5
+                                    </span>
+
+                                </td>
+
+
+                                <td th:text="${f.comment != null && !f.comment.isBlank()
+                                        ? f.comment
+                                        : '—'}">
+                                    —
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- IMPROVEMENT PLANS -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <h2>
+                        Improvement Plans
+                    </h2>
+
+                    <span class="tag">
+                        WORKFLOW
+                    </span>
+
+                </div>
+
+
+                <div th:if="${plans == null || plans.isEmpty()}" class="empty">
+
+                    No plans yet.
+
+                </div>
+
+
+                <div class="plan-mini" th:each="p : ${plans}">
+
+                    <div>
+
+                        <b th:text="${p.title}">
+                            Improvement Plan
+                        </b>
+
+                        <span th:text="${p.status}">
+                            DRAFT
+                        </span>
+
+                    </div>
+
+
+                    <form th:if="${p.status != null &&
+                            (p.status.name() == 'DRAFT' ||
+                             p.status.name() == 'CHANGES_REQUESTED')}"
+                        th:action="@{'/faculty/plans/' + ${p.id} + '/submit'}" method="post">
+
+                        <button class="btn btn-small" type="submit">
+
+                            Submit to HOD
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- QUESTION MANAGEMENT -->
+        <!-- ========================= -->
+
+        <section class="panel">
+
+            <div class="panel-head">
+
+                <h2>
+                    Question Management
+                </h2>
+
+                <span class="tag">
+                    FACULTY CONFIG
+                </span>
+
+            </div>
+
+
+            <form method="post" th:action="@{/faculty/questions}" class="form-grid">
+
+                <label>
+
+                    Question
+
+                    <input name="questionText" required placeholder="Add a learning-experience question">
+
+                </label>
+
+
+                <label>
+
+                    Category
+
+                    <input name="category" required placeholder="Teaching Quality">
+
+                </label>
+
+
+                <button class="btn btn-primary" type="submit">
+
+                    Add question
+
+                </button>
+
+            </form>
+
+
+            <div th:if="${questions == null || questions.isEmpty()}" class="empty">
+
+                No questions configured yet.
+
+            </div>
+
+
+            <div class="question-list compact" th:if="${questions != null && !questions.isEmpty()}">
+
+                <div th:each="q : ${questions}">
+
+                    <span th:text="${q.questionText}">
+                        Question
+                    </span>
+
+
+                    <span>
+
+                        <span class="tag" th:text="${q.category}">
+                            Category
+                        </span>
+
+
+                        <form class="inline" style="display: inline" method="post"
+                            th:action="@{'/faculty/questions/' + ${q.id} + '/disable'}">
+
+                            <button class="btn btn-small" type="submit">
+
+                                Disable
+
+                            </button>
+
+                        </form>
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+
+    <footer th:replace="~{fragments/footer :: footer}">
+    </footer>
+
+</body>
+
+</html>
